@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TechJobsConsole
 {
@@ -48,14 +49,44 @@ namespace TechJobsConsole
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
+                // for case-insensitive search
+                bool contains = Regex.IsMatch(aValue, value, RegexOptions.IgnoreCase);
 
-                if (aValue.Contains(value))
+                //if (aValue.Contains(value))
+                if (contains) // for case-insensitive search
                 {
                     jobs.Add(row);
                 }
             }
 
             return jobs;
+        }
+
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> field in job)
+                {
+                    string aValue = field.Value;
+                    // for case-insensitive search
+                    bool contains = Regex.IsMatch(aValue, value, RegexOptions.IgnoreCase);
+
+                    //if (aValue.Contains(value))
+                    if (contains) // for case-insensitive search
+                    {
+                        jobs.Add(job);
+                        break;
+                    }
+                }
+            }
+
+            return jobs;
+
         }
 
         /*
